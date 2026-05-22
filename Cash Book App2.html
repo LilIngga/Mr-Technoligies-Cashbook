@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<!-- saved from url=(0055)file:///C:/Users/Administrator/Pictures/Untitled-1.html -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cash Book App</title>
+  <style>
+    :root{
+      --bg:#f4f7fb;
+      --card:#ffffff;
+      --primary:#2563eb;
+      --success:#16a34a;
+      --danger:#dc2626;
+      --text:#1f2937;
+      --muted:#6b7280;
+      --border:#dbe3ef;
+      --shadow:0 10px 25px rgba(0,0,0,.08);
+      --radius:18px;
+    }
+
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: Arial, Helvetica, sans-serif;
+      background:linear-gradient(180deg,#eef4ff 0%, #f8fbff 100%);
+      color:var(--text);
+    }
+
+    .container{
+      max-width:1200px;
+      margin:0 auto;
+      padding:20px;
+    }
+
+    .header{
+      background:linear-gradient(135deg, #1d4ed8, #0f766e);
+      color:white;
+      padding:24px;
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      margin-bottom:20px;
+    }
+
+    .header h1{
+      margin:0 0 8px;
+      font-size:32px;
+    }
+
+    .header p{
+      margin:0;
+      opacity:.95;
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns: 1fr 1.1fr;
+      gap:20px;
+    }
+
+    .card{
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      padding:18px;
+    }
+
+    .card h2{
+      margin:0 0 16px;
+      font-size:22px;
+    }
+
+    .stats{
+      display:grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap:14px;
+      margin-bottom:20px;
+    }
+
+    .stat{
+      background:white;
+      border:1px solid var(--border);
+      border-radius:16px;
+      padding:16px;
+      box-shadow:var(--shadow);
+    }
+
+    .stat .label{
+      color:var(--muted);
+      font-size:13px;
+      margin-bottom:8px;
+    }
+
+    .stat .value{
+      font-size:24px;
+      font-weight:700;
+      word-break:break-word;
+    }
+
+    .value.green{color:var(--success)}
+    .value.red{color:var(--danger)}
+    .value.blue{color:var(--primary)}
+
+    form{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:12px;
+    }
+
+    .full{grid-column:1 / -1;}
+
+    label{
+      display:block;
+      font-size:13px;
+      font-weight:700;
+      margin-bottom:6px;
+      color:#334155;
+    }
+
+    input, select, textarea{
+      width:100%;
+      padding:12px 13px;
+      border:1px solid #cbd5e1;
+      border-radius:12px;
+      font-size:15px;
+      outline:none;
+      background:#fff;
+    }
+
+    input:focus, select:focus, textarea:focus{
+      border-color:var(--primary);
+      box-shadow:0 0 0 3px rgba(37,99,235,.12);
+    }
+
+    textarea{
+      min-height:90px;
+      resize:vertical;
+    }
+
+    .actions{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top:6px;
+    }
+
+    button{
+      border:none;
+      border-radius:12px;
+      padding:12px 16px;
+      font-size:15px;
+      font-weight:700;
+      cursor:pointer;
+      transition:.2s;
+    }
+
+    button:hover{transform:translateY(-1px)}
+    .btn-primary{background:var(--primary); color:white;}
+    .btn-secondary{background:#e2e8f0; color:#111827;}
+    .btn-danger{background:var(--danger); color:white;}
+    .btn-success{background:var(--success); color:white;}
+
+    .toolbar{
+      display:grid;
+      grid-template-columns: 1.2fr .8fr .8fr auto;
+      gap:12px;
+      margin-bottom:14px;
+    }
+
+    .table-wrap{
+      overflow:auto;
+      border-radius:16px;
+      border:1px solid var(--border);
+      background:white;
+    }
+
+    table{
+      width:100%;
+      border-collapse:collapse;
+      min-width:980px;
+    }
+
+    th, td{
+      padding:12px 10px;
+      border-bottom:1px solid #e5e7eb;
+      text-align:left;
+      vertical-align:top;
+      font-size:14px;
+    }
+
+    th{
+      background:#f8fafc;
+      color:#334155;
+      font-weight:800;
+      position:sticky;
+      top:0;
+      z-index:1;
+    }
+
+    tr:hover td{
+      background:#f9fbff;
+    }
+
+    .type-in{
+      color:var(--success);
+      font-weight:700;
+    }
+
+    .type-out{
+      color:var(--danger);
+      font-weight:700;
+    }
+
+    .pill{
+      display:inline-block;
+      padding:4px 10px;
+      border-radius:999px;
+      font-size:12px;
+      font-weight:700;
+      background:#eef2ff;
+      color:#3730a3;
+    }
+
+    .btn-mini{
+      padding:8px 10px;
+      font-size:13px;
+      border-radius:10px;
+      margin-right:6px;
+      margin-bottom:6px;
+    }
+
+    .empty{
+      padding:24px;
+      text-align:center;
+      color:var(--muted);
+    }
+
+    .footer-note{
+      margin-top:12px;
+      color:var(--muted);
+      font-size:13px;
+    }
+
+    @media (max-width: 980px){
+      .grid{grid-template-columns:1fr}
+      .stats{grid-template-columns:1fr}
+      .toolbar{grid-template-columns:1fr 1fr}
+      form{grid-template-columns:1fr}
+    }
+
+    @media (max-width: 600px){
+      .toolbar{grid-template-columns:1fr}
+      .header h1{font-size:26px}
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>Mr technologies Cash Book App</h1>
+      <p>Mr technologies | +263 77 979 4836 | +263 788 681 550</p>
+      <p>Add, withdraw, edit, and track money with dates, time, and balance.</p>
+    </div>
+
+    <div class="stats">
+      <div class="stat">
+        <div class="label">Current Balance</div>
+        <div id="balance" class="value blue">0.00</div>
+      </div>
+      <div class="stat">
+        <div class="label">Total Money In</div>
+        <div id="totalIn" class="value green">0.00</div>
+      </div>
+      <div class="stat">
+        <div class="label">Total Money Out</div>
+        <div id="totalOut" class="value red">0.00</div>
+      </div>
+    </div>
+
+    <div class="grid">
+      <div class="card">
+        <h2 id="formTitle">Add Transaction</h2>
+        <form id="cashForm">
+          <div>
+            <label for="type">Transaction Type</label>
+            <select id="type" required="">
+              <option value="in">Money In / Deposit</option>
+              <option value="out">Money Out / Withdrawal</option>
+            </select>
+          </div>
+
+          <div>
+            <label for="amount">Amount</label>
+            <input type="number" id="amount" min="0.01" step="0.01" placeholder="Enter amount" required="">
+          </div>
+
+          <div>
+            <label for="date">Date</label>
+            <input type="date" id="date" required="">
+          </div>
+
+          <div>
+            <label for="time">Time</label>
+            <input type="time" id="time" required="">
+          </div>
+
+          <div>
+            <label for="category">Category</label>
+            <input type="text" id="category" placeholder="Example: School fees, Food, Salary">
+          </div>
+
+          <div>
+            <label for="reference">Reference / Person</label>
+            <input type="text" id="reference" placeholder="Example: John, Cash, Transfer">
+          </div>
+
+          <div class="full">
+            <label for="note">Note</label>
+            <textarea id="note" placeholder="Add extra details here..."></textarea>
+          </div>
+
+          <div class="full actions">
+            <button type="submit" class="btn-primary" id="saveBtn">Add Transaction</button>
+            <button type="button" class="btn-secondary" id="resetBtn">Reset</button>
+          </div>
+
+          <input type="hidden" id="editingId" value="">
+        </form>
+      </div>
+
+      <div class="card">
+        <h2>Transaction History</h2>
+
+        <div class="toolbar">
+          <div>
+            <label for="search">Search</label>
+            <input type="text" id="search" placeholder="Search by note, category, reference...">
+          </div>
+
+          <div>
+            <label for="filterType">Filter Type</label>
+            <select id="filterType">
+              <option value="all">All</option>
+              <option value="in">Money In</option>
+              <option value="out">Money Out</option>
+            </select>
+          </div>
+
+          <div>
+            <label for="sortBy">Sort By</label>
+            <select id="sortBy">
+              <option value="newest">Newest First</option>
+              <option value="oldest">Oldest First</option>
+              <option value="amountHigh">Highest Amount</option>
+              <option value="amountLow">Lowest Amount</option>
+            </select>
+          </div>
+
+          <div style="display:flex;align-items:end;">
+            <button class="btn-danger" id="clearAllBtn" type="button">Clear All</button>
+          </div>
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Date &amp; Time</th>
+                <th>Type</th>
+                <th>Amount</th>
+                <th>Category</th>
+                <th>Reference</th>
+                <th>Note</th>
+                <th>Running Balance</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="tableBody">
+          <tr>
+            <td colspan="8" class="empty">No transactions found.</td>
+          </tr>
+        </tbody>
+          </table>
+        </div>
+
+        <div class="footer-note">
+          Mr technologies | +263 77 979 4836 | +263 788 681 550
+        </div>
+        <div class="footer-note">
+          Saved automatically in your browser using local storage.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const form = document.getElementById("cashForm");
+    const typeEl = document.getElementById("type");
+    const amountEl = document.getElementById("amount");
+    const dateEl = document.getElementById("date");
+    const timeEl = document.getElementById("time");
+    const categoryEl = document.getElementById("category");
+    const referenceEl = document.getElementById("reference");
+    const noteEl = document.getElementById("note");
+    const editingIdEl = document.getElementById("editingId");
+    const formTitle = document.getElementById("formTitle");
+    const saveBtn = document.getElementById("saveBtn");
+    const resetBtn = document.getElementById("resetBtn");
+    const clearAllBtn = document.getElementById("clearAllBtn");
+    const searchEl = document.getElementById("search");
+    const filterTypeEl = document.getElementById("filterType");
+    const sortByEl = document.getElementById("sortBy");
+    const tableBody = document.getElementById("tableBody");
+    const balanceEl = document.getElementById("balance");
+    const totalInEl = document.getElementById("totalIn");
+    const totalOutEl = document.getElementById("totalOut");
+
+    const STORAGE_KEY = "cashBookTransactions_v1";
+    let transactions = loadTransactions();
+
+    function uid() {
+      return (Date.now().toString(36) + Math.random().toString(36).slice(2, 9));
+    }
+
+    function pad(n) {
+      return String(n).padStart(2, "0");
+    }
+
+    function formatCurrency(num) {
+      return Number(num || 0).toFixed(2);
+    }
+
+    function loadTransactions() {
+      try {
+        const data = JSON.parse(localStorage.getItem(STORAGE_KEY));
+        return Array.isArray(data) ? data : [];
+      } catch (e) {
+        return [];
+      }
+    }
+
+    function saveTransactions() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(transactions));
+    }
+
+    function getNowDate() {
+      const d = new Date();
+      return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+    }
+
+    function getNowTime() {
+      const d = new Date();
+      return `${pad(d.getHours())}:${pad(d.getMinutes())}`;
+    }
+
+    function setDefaultDateTime() {
+      if (!dateEl.value) dateEl.value = getNowDate();
+      if (!timeEl.value) timeEl.value = getNowTime();
+    }
+
+    function resetForm() {
+      form.reset();
+      editingIdEl.value = "";
+      formTitle.textContent = "Add Transaction";
+      saveBtn.textContent = "Add Transaction";
+      setDefaultDateTime();
+      amountEl.focus();
+    }
+
+    function sortTransactions(list) {
+      const sortBy = sortByEl.value;
+      const copy = [...list];
+
+      if (sortBy === "newest") {
+        copy.sort((a, b) => new Date(b.datetime) - new Date(a.datetime));
+      } else if (sortBy === "oldest") {
+        copy.sort((a, b) => new Date(a.datetime) - new Date(b.datetime));
+      } else if (sortBy === "amountHigh") {
+        copy.sort((a, b) => b.amount - a.amount);
+      } else if (sortBy === "amountLow") {
+        copy.sort((a, b) => a.amount - b.amount);
+      }
+
+      return copy;
+    }
+
+    function filteredTransactions() {
+      const search = searchEl.value.trim().toLowerCase();
+      const filterType = filterTypeEl.value;
+
+      let list = transactions.filter(t => {
+        const text = `${t.category} ${t.reference} ${t.note} ${t.type}`.toLowerCase();
+        const matchSearch = !search || text.includes(search);
+        const matchType = filterType === "all" || t.type === filterType;
+        return matchSearch && matchType;
+      });
+
+      return sortTransactions(list);
+    }
+
+    function calculateBalance(list) {
+      let balance = 0;
+      let totalIn = 0;
+      let totalOut = 0;
+
+      const sorted = [...list].sort((a, b) => new Date(a.datetime) - new Date(b.datetime));
+
+      sorted.forEach(t => {
+        if (t.type === "in") {
+          balance += t.amount;
+          totalIn += t.amount;
+        } else {
+          balance -= t.amount;
+          totalOut += t.amount;
+        }
+      });
+
+      return { balance, totalIn, totalOut };
+    }
+
+    function updateSummary() {
+      const { balance, totalIn, totalOut } = calculateBalance(transactions);
+      balanceEl.textContent = formatCurrency(balance);
+      totalInEl.textContent = formatCurrency(totalIn);
+      totalOutEl.textContent = formatCurrency(totalOut);
+    }
+
+    function renderTable() {
+      const list = filteredTransactions();
+      updateSummary();
+
+      if (list.length === 0) {
+        tableBody.innerHTML = `
+          <tr>
+            <td colspan="8" class="empty">No transactions found.</td>
+          </tr>
+        `;
+        return;
+      }
+
+      // Running balance is calculated in chronological order
+      const sortedChronological = [...transactions].sort((a, b) => new Date(a.datetime) - new Date(b.datetime));
+      const runningMap = new Map();
+      let running = 0;
+
+      sortedChronological.forEach(t => {
+        running += t.type === "in" ? t.amount : -t.amount;
+        runningMap.set(t.id, running);
+      });
+
+      tableBody.innerHTML = list.map(t => {
+        const dt = new Date(t.datetime);
+        const dateText = dt.toLocaleDateString();
+        const timeText = dt.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+        const typeLabel = t.type === "in" ? "Money In" : "Money Out";
+        const typeClass = t.type === "in" ? "type-in" : "type-out";
+        const balanceText = formatCurrency(runningMap.get(t.id) ?? 0);
+
+        return `
+          <tr>
+            <td>${dateText}<br><span class="pill">${timeText}</span></td>
+            <td class="${typeClass}">${typeLabel}</td>
+            <td>${formatCurrency(t.amount)}</td>
+            <td>${escapeHtml(t.category || "-")}</td>
+            <td>${escapeHtml(t.reference || "-")}</td>
+            <td>${escapeHtml(t.note || "-")}</td>
+            <td><strong>${balanceText}</strong></td>
+            <td>
+              <button class="btn-mini btn-success" onclick="editTransaction('${t.id}')">Edit</button>
+              <button class="btn-mini btn-danger" onclick="deleteTransaction('${t.id}')">Delete</button>
+            </td>
+          </tr>
+        `;
+      }).join("");
+    }
+
+    function escapeHtml(text) {
+      return String(text)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+
+      const amount = parseFloat(amountEl.value);
+      if (isNaN(amount) || amount <= 0) {
+        alert("Please enter a valid amount.");
+        return;
+      }
+
+      if (!dateEl.value || !timeEl.value) {
+        alert("Please choose both date and time.");
+        return;
+      }
+
+      const datetime = new Date(`${dateEl.value}T${timeEl.value}:00`).toISOString();
+      const entry = {
+        id: editingIdEl.value || uid(),
+        type: typeEl.value,
+        amount: amount,
+        datetime: datetime,
+        category: categoryEl.value.trim(),
+        reference: referenceEl.value.trim(),
+        note: noteEl.value.trim()
+      };
+
+      if (editingIdEl.value) {
+        const index = transactions.findIndex(t => t.id === editingIdEl.value);
+        if (index !== -1) transactions[index] = entry;
+      } else {
+        transactions.push(entry);
+      }
+
+      saveTransactions();
+      renderTable();
+      resetForm();
+    });
+
+    resetBtn.addEventListener("click", resetForm);
+
+    clearAllBtn.addEventListener("click", function () {
+      if (transactions.length === 0) {
+        alert("No transactions to clear.");
+        return;
+      }
+      if (confirm("Are you sure you want to delete all transactions?")) {
+        transactions = [];
+        saveTransactions();
+        renderTable();
+        resetForm();
+      }
+    });
+
+    searchEl.addEventListener("input", renderTable);
+    filterTypeEl.addEventListener("change", renderTable);
+    sortByEl.addEventListener("change", renderTable);
+
+    window.editTransaction = function (id) {
+      const t = transactions.find(item => item.id === id);
+      if (!t) return;
+
+      const dt = new Date(t.datetime);
+
+      typeEl.value = t.type;
+      amountEl.value = t.amount;
+      dateEl.value = `${dt.getFullYear()}-${pad(dt.getMonth() + 1)}-${pad(dt.getDate())}`;
+      timeEl.value = `${pad(dt.getHours())}:${pad(dt.getMinutes())}`;
+      categoryEl.value = t.category || "";
+      referenceEl.value = t.reference || "";
+      noteEl.value = t.note || "";
+      editingIdEl.value = t.id;
+
+      formTitle.textContent = "Edit Transaction";
+      saveBtn.textContent = "Update Transaction";
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    };
+
+    window.deleteTransaction = function (id) {
+      const t = transactions.find(item => item.id === id);
+      if (!t) return;
+
+      if (confirm("Delete this transaction?")) {
+        transactions = transactions.filter(item => item.id !== id);
+        saveTransactions();
+        renderTable();
+        if (editingIdEl.value === id) resetForm();
+      }
+    };
+
+    // Initial setup
+    setDefaultDateTime();
+    renderTable();
+
+    // Update date/time with current time on page load if fields are empty
+    setInterval(() => {
+      if (!editingIdEl.value) {
+        if (!dateEl.value) dateEl.value = getNowDate();
+        if (!timeEl.value) timeEl.value = getNowTime();
+      }
+    }, 60000);
+  </script>
+
+</body></html>
